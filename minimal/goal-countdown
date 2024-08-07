@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Widget</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .widget {
+            padding: 20px;
+            color: #000000;
+            text-align: center;
+            width: 300px;
+            margin: auto;
+            font-variant-caps: petite-caps;
+            font-size: 1.2em;
+            background:
+                linear-gradient(to right, black 4px, transparent 4px) 0 0,
+                linear-gradient(to right, black 4px, transparent 4px) 0 100%,
+                linear-gradient(to left, black 4px, transparent 4px) 100% 0,
+                linear-gradient(to left, black 4px, transparent 4px) 100% 100%,
+                linear-gradient(to bottom, black 4px, transparent 4px) 0 0,
+                linear-gradient(to bottom, black 4px, transparent 4px) 100% 0,
+                linear-gradient(to top, black 4px, transparent 4px) 0 100%,
+                linear-gradient(to top, black 4px, transparent 4px) 100% 100%;
+            background-repeat: no-repeat;
+            background-size: 20px 20px;
+        }
+        #countdown {
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
+        input, button {
+            margin: 5px 0;
+            padding: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        #goalText {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="widget" id="widget">
+        <div id="setupForm">
+            <input type="text" id="goalInput" placeholder="Enter your goal">
+            <input type="date" id="dateInput">
+            <button onclick="setCountdown()">Set Countdown</button>
+        </div>
+        <div id="countdownDisplay" style="display:none;">
+            <div id="goalText"></div>
+            <div id="countdown"></div>
+            <button onclick="resetCountdown()">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        let countdownDate;
+        let countdownInterval;
+
+        function setCountdown() {
+            const goal = document.getElementById('goalInput').value;
+            const date = document.getElementById('dateInput').value;
+            
+            if (!goal || !date) {
+                alert('Please enter both a goal and a date.');
+                return;
+            }
+
+            countdownDate = new Date(date).getTime();
+            document.getElementById('goalText').innerText = goal;
+            document.getElementById('setupForm').style.display = 'none';
+            document.getElementById('countdownDisplay').style.display = 'block';
+            
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById('countdown').innerHTML = "EXPIRED";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('countdown').innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        function resetCountdown() {
+            clearInterval(countdownInterval);
+            document.getElementById('setupForm').style.display = 'block';
+            document.getElementById('countdownDisplay').style.display = 'none';
+            document.getElementById('goalInput').value = '';
+            document.getElementById('dateInput').value = '';
+        }
+    </script>
+</body>
+</html>
