@@ -44,10 +44,12 @@
         function showPosition(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
+            console.log(`Latitude: ${lat}, Longitude: ${lon}`);
             fetchWeather(lat, lon);
         }
 
         function showError(error) {
+            console.error('Geolocation error:', error);
             switch(error.code) {
                 case error.PERMISSION_DENIED:
                     document.getElementById("location").innerHTML = "User denied the request for Geolocation.";
@@ -65,12 +67,20 @@
         }
 
         function fetchWeather(lat, lon) {
-            const apiKey = 'ad9f4c9f69006003f4cd235d5d20797b'; // Replace with your OpenWeatherMap API key
+            const apiKey = ad9f4c9f69006003f4cd235d5d20797b; // Replace with your OpenWeatherMap API key
             const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
 
+            console.log('Fetching weather from:', apiUrl);
+
             fetch(apiUrl)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
+                    console.log('Weather data:', data);
                     document.getElementById("location").innerHTML = `Location: ${data.name}`;
                     document.getElementById("temperature").innerHTML = `Temperature: ${data.main.temp}°C`;
                     document.getElementById("description").innerHTML = `Description: ${data.weather[0].description}`;
