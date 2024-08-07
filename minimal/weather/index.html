@@ -1,22 +1,87 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
-	<meta charset="UTF-8">
-  	<title>Weather</title>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  	<link rel="stylesheet" href="style.css">
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-39WWGPP5QV"></script>
-	<script>
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-
-	gtag('config', 'G-39WWGPP5QV');
-	</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Widget</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        #weather-widget {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-	<a id="weather" class="weatherwidget-io inactiveLink" href="https://forecast7.com/en/43d65n79d38/toronto/" data-label_1="TORONTO" data-icons="Climacons Animated" data-mode="Current"></a>
-	<script  src="script.js"></script>
+    <div id="weather-widget">
+        <h2>Current Weather</h2>
+        <p id="location">Loading location...</p>
+        <p id="temperature">Loading temperature...</p>
+        <p id="description">Loading description...</p>
+    </div>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function showPosition(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            fetchWeather(lat, lon);
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById("location").innerHTML = "User denied the request for Geolocation.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById("location").innerHTML = "Location information is unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById("location").innerHTML = "The request to get user location timed out.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    document.getElementById("location").innerHTML = "An unknown error occurred.";
+                    break;
+            }
+        }
+
+        function fetchWeather(lat, lon) {
+            const apiKey = 'ad9f4c9f69006003f4cd235d5d20797b'; // Replace with your OpenWeatherMap API key
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("location").innerHTML = `Location: ${data.name}`;
+                    document.getElementById("temperature").innerHTML = `Temperature: ${data.main.temp}°C`;
+                    document.getElementById("description").innerHTML = `Description: ${data.weather[0].description}`;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById("location").innerHTML = "Failed to fetch weather data.";
+                });
+        }
+
+        getLocation();
+    </script>
 </body>
 </html>
