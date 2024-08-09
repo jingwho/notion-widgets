@@ -3,41 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MBTI Type Information</title>
+    <title>MBTI Type Widget</title>
     <style>
+        :root {
+            --widget-bg-color: #FFFFFF;
+            --widget-text-color: #000000;
+            --widget-border-color: #000000;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-variant-caps: all-petite-caps;
+            background-color: #f0f0f0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
         }
+
         .widget {
+            background-color: var(--widget-bg-color);
+            color: var(--widget-text-color);
+            border: 3px solid var(--widget-border-color);
+            border-radius: 5px;
+            box-shadow: 2px 2px 1px 0px var(--widget-border-color);
             padding: 20px;
-            color: #000000;
-            text-align: left;
-            width: 300px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 95%;
+            width: 400px;
+            margin: auto;
+            text-align: center;
         }
-        select, h2 {
-            width: 100%;
-            margin-bottom: 15px;
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        select {
+            font-size: 18px;
+            margin-bottom: 20px;
             padding: 5px;
+            width: 200px;
         }
-        #typeInfo {
-            font-size: 0.9em;
-            line-height: 1.4;
+
+        #result {
+            text-align: left;
+        }
+
+        #result h2 {
+            font-size: 20px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        #result ul {
+            margin-top: 0;
+            padding-left: 20px;
         }
     </style>
 </head>
 <body>
     <div class="widget">
-        <select id="mbtiType" onchange="updateTypeInfo()">
-            <option value="">Select MBTI Type</option>
+        <h1>MBTI TYPE SELECTOR</h1>
+        <select id="mbtiSelect">
+            <option value="">Select your MBTI type</option>
             <option value="INTJ">INTJ</option>
             <option value="INTP">INTP</option>
             <option value="ENTJ">ENTJ</option>
@@ -55,128 +85,255 @@
             <option value="ESTP">ESTP</option>
             <option value="ESFP">ESFP</option>
         </select>
-        <h2 id="typeTitle"></h2>
-        <div id="typeInfo"></div>
+        <div id="result"></div>
     </div>
 
     <script>
         const mbtiData = {
-            INTJ: {
-                title: "The Architect",
-                description: "Imaginative and strategic thinkers, with a plan for everything.",
-                strengths: "Rational, informed, independent, determined, curious, versatile",
-                weaknesses: "Arrogant, dismissive of emotions, overly critical, combative, clueless in romance"
-            },
-            INTP: {
-                title: "The Logician",
-                description: "Innovative inventors with an unquenchable thirst for knowledge.",
-                strengths: "Analytical, original, open-minded, curious, objective",
-                weaknesses: "Disconnected, insensitive, dissatisfied, impatient, perfectionistic"
-            },
-            ENTJ: {
-                title: "The Commander",
-                description: "Bold, imaginative and strong-willed leaders, always finding a way – or making one.",
-                strengths: "Efficient, energetic, self-confident, strong-willed, strategic thinkers",
-                weaknesses: "Stubborn, dominant, intolerant, impatient, arrogant"
-            },
-            ENTP: {
-                title: "The Debater",
-                description: "Smart and curious thinkers who cannot resist an intellectual challenge.",
-                strengths: "Knowledgeable, quick thinkers, original, charismatic, energetic",
-                weaknesses: "Argumentative, insensitive, intolerant, unfocused, disorganized"
-            },
-            INFJ: {
-                title: "The Advocate",
-                description: "Quiet and mystical, yet very inspiring and tireless idealists.",
-                strengths: "Creative, insightful, principled, passionate, altruistic",
-                weaknesses: "Sensitive to criticism, extremely private, perfectionist, always need to have a cause"
-            },
-            INFP: {
-                title: "The Mediator",
-                description: "Poetic, kind and altruistic people, always eager to help a good cause.",
-                strengths: "Empathetic, generous, open-minded, creative, passionate, idealistic",
-                weaknesses: "Unrealistic, self-isolating, unfocused, emotionally vulnerable, desperate to please"
-            },
-            ENFJ: {
-                title: "The Protagonist",
-                description: "Charismatic and inspiring leaders, able to mesmerize their listeners.",
-                strengths: "Charismatic, tolerant, reliable, natural leaders, warm",
-                weaknesses: "Overly idealistic, too selfless, too sensitive, fluctuating self-esteem"
-            },
-            ENFP: {
-                title: "The Campaigner",
-                description: "Enthusiastic, creative and sociable free spirits, who can always find a reason to smile.",
-                strengths: "Curious, observant, energetic and enthusiastic, excellent communicators",
-                weaknesses: "Poor practical skills, find it difficult to focus, overthink things, get stressed easily"
-            },
-            ISTJ: {
-                title: "The Logistician",
-                description: "Practical and fact-minded individuals, whose reliability cannot be doubted.",
-                strengths: "Honest and direct, strong-willed and dutiful, very responsible, calm and practical",
-                weaknesses: "Stubborn, insensitive, always by the book, judgmental, often unreasonably blame themselves"
-            },
-            ISFJ: {
-                title: "The Defender",
-                description: "Very dedicated and warm protectors, always ready to defend their loved ones.",
-                strengths: "Supportive, reliable and patient, imaginative and observant, enthusiastic, loyal and hard-working",
-                weaknesses: "Shy and unwilling to open up, take things too personally, repress their feelings, overload themselves"
-            },
-            ESTJ: {
-                title: "The Executive",
-                description: "Excellent administrators, unsurpassed at managing things – or people.",
-                strengths: "Dedicated, strong-willed, direct and honest, loyal, patient and reliable",
-                weaknesses: "Inflexible and stubborn, uncomfortable with unconventional situations, judgmental, too focused on social status"
-            },
-            ESFJ: {
-                title: "The Consul",
-                description: "Extraordinarily caring, social and popular people, always eager to help.",
-                strengths: "Strong practical skills, strong sense of duty, very loyal, sensitive and warm",
-                weaknesses: "Worried about their social status, inflexible, unwilling to improvise, vulnerable to criticism"
-            },
-            ISTP: {
-                title: "The Virtuoso",
-                description: "Bold and practical experimenters, masters of all kinds of tools.",
-                strengths: "Optimistic and energetic, creative and practical, spontaneous and rational, know how to prioritize",
-                weaknesses: "Stubborn, insensitive, private and reserved, easily bored, dislike commitment"
-            },
-            ISFP: {
-                title: "The Adventurer",
-                description: "Flexible and charming artists, always ready to explore and experience something new.",
-                strengths: "Charming, sensitive to others, imaginative, passionate, curious",
-                weaknesses: "Fiercely independent, unpredictable, easily stressed, overly competitive"
-            },
-            ESTP: {
-                title: "The Entrepreneur",
-                description: "Smart, energetic and very perceptive people, who truly enjoy living on the edge.",
-                strengths: "Bold, rational and practical, original, perceptive, direct",
-                weaknesses: "Insensitive, impatient, risk-prone, unstructured, may miss the bigger picture"
-            },
-            ESFP: {
-                title: "The Entertainer",
-                description: "Spontaneous, energetic and enthusiastic people – life is never boring around them.",
-                strengths: "Bold, original, aesthetic skills, showmanship, practical",
-                weaknesses: "Sensitive, conflict-averse, easily bored, poor long-term planners"
-            }
+            "INTJ": {
+        strengths: `INTJs are known for their strategic thinking, independence, and innovative approach to problem-solving. They excel at seeing the big picture and developing long-term plans. Their analytical skills allow them to quickly identify patterns and create effective solutions. INTJs are often visionaries, capable of transforming abstract concepts into concrete plans of action. Their determination and focus enable them to overcome obstacles and achieve their goals.`,
+
+        weaknesses: `The INTJ's strengths can sometimes become weaknesses. Their critical nature may lead them to be overly judgmental of others and themselves. They might struggle with emotional expression and empathy, potentially causing interpersonal conflicts. INTJs can be perceived as arrogant or dismissive when they believe their ideas are superior. Their perfectionism might lead to analysis paralysis or difficulty delegating tasks. They may also struggle with patience for those who don't grasp concepts as quickly as they do.`,
+        
+        workplaceHabits: `In the workplace, INTJs thrive in environments that value competence and allow for autonomy. They prefer to work independently and may struggle with micromanagement. INTJs are often drawn to complex, challenging projects that require strategic thinking and innovation. They excel at creating systems and processes to improve efficiency. However, they may need to consciously work on their communication skills, especially when explaining their ideas to others who don't share their intuitive leaps. INTJs value knowledge and continuous improvement, often seeking to expand their expertise in their field.`,
+        
+        percentage: `INTJs are relatively rare, making up approximately 2.1% of the population. This rarity can be both an advantage and a challenge in the business world, as their unique perspective can lead to groundbreaking innovations but may also result in feeling misunderstood by the majority.`,
+        
+        cofounderAwareness: `When looking for a co-founder, INTJs should be aware of their tendency to prioritize logic over emotions. Seeking a co-founder with strong emotional intelligence and interpersonal skills can create a balanced leadership dynamic. INTJs should look for partners who can complement their strategic vision with practical implementation skills. It's crucial for INTJs to find co-founders who respect their need for autonomy but can also provide the social connection and external communication that INTJs might neglect. Be mindful of potential conflicts arising from the INTJ's direct communication style and high standards – a co-founder who can provide constructive feedback and isn't intimidated by intellectual debates would be ideal.`,
+        
+        startupAwareness: `When starting a company, INTJs should be aware of their strengths in long-term planning and strategy, but also conscious of potential blind spots. Their focus on efficiency and systems can be a great asset in structuring a startup, but they need to balance this with flexibility and adaptability crucial for early-stage companies. INTJs should actively work on developing their emotional intelligence to better manage and motivate team members. They may need to consciously create opportunities for team bonding and open communication, aspects that don't come naturally to them but are vital for startup success. INTJs should also be aware of their tendency to perfect ideas before implementation – in the fast-paced startup world, they may need to become comfortable with iterating and launching minimum viable products. Lastly, INTJs should leverage their natural ability to see market trends and anticipate future developments, using this foresight to guide their startup's strategic decisions.`
+    },
+
+            "INTP": {
+        strengths: `INTPs are known for their exceptional analytical and problem-solving skills. They excel at understanding complex systems and theories, often developing unique and innovative solutions. Their creativity and intellectual curiosity drive them to explore new ideas and push boundaries. INTPs are adaptable thinkers, able to quickly grasp and synthesize new information. Their logical approach and objectivity allow them to make impartial decisions based on facts and data.`,
+        
+        weaknesses: `INTPs may struggle with practical implementation of their ideas, often preferring to stay in the realm of theory. They can be perceived as aloof or detached, potentially leading to difficulties in interpersonal relationships. Their tendency to question established norms might create conflicts in more traditional work environments. INTPs may also struggle with time management and meeting deadlines, as they often get caught up in exploring tangential ideas. Their perfectionism can lead to procrastination or difficulty in completing projects.`,
+        
+        workplaceHabits: `In the workplace, INTPs thrive in environments that offer intellectual stimulation and autonomy. They excel at tasks requiring deep analysis, problem-solving, and innovation. INTPs prefer to work independently and may struggle with rigid structures or excessive rules. They are often drawn to fields like scientific research, software development, or strategic planning. INTPs may need to consciously work on their communication skills, especially when explaining complex ideas to non-technical team members. They value competence over hierarchy and may clash with authority figures they deem incompetent.`,
+        
+        percentage: `INTPs make up approximately 3-5% of the population, making them one of the rarer personality types. This uniqueness can be an asset in bringing fresh perspectives to business challenges, but may also lead to feelings of being misunderstood or out of place in more conventional work environments.`,
+        
+        cofounderAwareness: `When seeking a co-founder, INTPs should be aware of their tendency to get lost in abstract ideas and theories. Look for a partner who can complement this with strong practical implementation skills and a focus on tangible results. INTPs would benefit from a co-founder who excels at networking and building relationships, as these are areas where INTPs might struggle. Be mindful of potential conflicts arising from the INTP's direct communication style and tendency to debate ideas – a co-founder who appreciates intellectual discourse but can also make timely decisions would be ideal. INTPs should seek partners who can provide structure and help with time management, balancing the INTP's more fluid approach to deadlines and schedules.`,
+        
+        startupAwareness: `In a startup context, INTPs should leverage their innovative thinking and problem-solving skills to develop unique products or services. However, they need to be aware of their tendency to perfect ideas indefinitely – in the fast-paced startup world, they must learn to balance thorough analysis with timely action. INTPs should actively work on developing their emotional intelligence and interpersonal skills, as these are crucial for team management and client relations. They may need to consciously create systems for project management and meeting deadlines, aspects that don't come naturally but are vital for startup success. INTPs should also be aware of their potential to overlook practical details in favor of big-picture thinking – partnering with or hiring detail-oriented individuals can help mitigate this. Lastly, INTPs should use their adaptability and quick learning to navigate the ever-changing startup landscape, while working on consistently translating their innovative ideas into marketable products or services.`
+    },
+            "ENTJ": {
+        strengths: `ENTJs are natural-born leaders with a gift for strategic planning and execution. They excel at organizing people and resources to achieve long-term goals. Their confidence, decisiveness, and ability to see the big picture make them effective in managerial and executive roles. ENTJs are driven by a desire for efficiency and are skilled at identifying and implementing improvements in systems and processes. Their charisma and persuasive communication skills enable them to rally others around their vision.`,
+        
+        weaknesses: `The ENTJ's strong personality can sometimes come across as domineering or insensitive. They may struggle with patience for those they perceive as less competent or efficient. Their focus on logic and results can lead them to overlook emotional considerations, potentially causing interpersonal conflicts. ENTJs might also have difficulty admitting when they're wrong or considering alternative viewpoints, which can lead to blind spots in decision-making. Their high standards for themselves and others can create a stressful work environment if not managed carefully.`,
+        
+        workplaceHabits: `In the workplace, ENTJs thrive in leadership positions where they can implement their vision and drive for achievement. They excel at creating and executing long-term strategies, often rising to top management positions. ENTJs are adept at delegating tasks and coordinating team efforts to maximize efficiency. They value competence and results, often creating merit-based systems in their organizations. However, they may need to consciously work on their listening skills and empathy to build stronger relationships with team members. ENTJs are often drawn to challenging, high-stakes environments where they can make a significant impact.`,
+        
+        percentage: `ENTJs comprise approximately 1.8% of the population, making them one of the rarer personality types. This rarity often translates into a unique ability to lead and innovate in the business world, though it can also mean they need to work on relating to and understanding the perspectives of other types.`,
+        
+        cofounderAwareness: `When looking for a co-founder, ENTJs should be aware of their tendency to take charge and potentially overshadow their partners. Seek a co-founder who is confident enough to stand their ground and provide alternative viewpoints. ENTJs would benefit from a partner who excels in areas they might overlook, such as emotional intelligence, attention to detail, or creative problem-solving. Be mindful of the potential for conflicts due to the ENTJ's direct and sometimes confrontational communication style – a co-founder who can provide diplomatic balance and help navigate complex interpersonal dynamics would be valuable. ENTJs should also look for partners who can help them pause and reflect before making decisions, balancing their quick, decisive nature with thoughtful consideration.`,
+        
+        startupAwareness: `In a startup environment, ENTJs should leverage their leadership skills and strategic thinking to guide the company's growth and development. However, they need to be aware of their tendency to push too hard or too fast – in the volatile startup world, flexibility and adaptability are crucial. ENTJs should actively work on developing their listening skills and emotional intelligence, as these are essential for building a cohesive team and maintaining morale during challenging times. They may need to consciously create an environment that encourages open communication and values diverse perspectives, even when they differ from the ENTJ's vision. Be aware of the potential to become too focused on the end goal at the expense of team well-being or ethical considerations. Lastly, ENTJs should use their natural networking abilities to build strong relationships with investors, partners, and clients, while also remaining open to advice and mentorship from experienced entrepreneurs.`
+    },
+            "ENTP": {
+        strengths: `ENTPs are innovative problem-solvers with a talent for generating creative ideas and seeing possibilities where others don't. They excel at conceptual and strategic thinking, often coming up with novel solutions to complex problems. Their quick wit and strong communication skills make them persuasive debaters and engaging leaders. ENTPs are adaptable and thrive in dynamic environments, making them well-suited for the ever-changing world of startups and entrepreneurship. Their enthusiasm and charisma can inspire others and rally support for their ideas.`,
+        
+        weaknesses: `ENTPs may struggle with follow-through, often more excited by the conception of ideas than their implementation. They can be argumentative, sometimes playing devil's advocate to the point of frustrating others. Their tendency to question established norms might create conflicts in more traditional work environments. ENTPs might also have difficulty with routine tasks and detailed work, preferring to focus on the big picture. Their love of debate and tendency to change their minds can sometimes be perceived as inconsistent or unreliable.`,
+        
+        workplaceHabits: `In the workplace, ENTPs thrive in roles that allow them to innovate and tackle new challenges regularly. They excel in brainstorming sessions and strategic planning, often generating numerous ideas and potential solutions. ENTPs are often drawn to entrepreneurship, consulting, or creative fields where their innovative thinking is valued. They work well in collaborative environments where they can bounce ideas off others. However, they may need support in turning their ideas into actionable plans and seeing projects through to completion. ENTPs value intellectual stimulation and may become bored or restless in highly structured or routine-driven environments.`,
+        
+        percentage: `ENTPs make up about 3% of the population. This relative rarity often translates into a unique ability to bring fresh perspectives and innovative ideas to the business world, though it can also mean they need to work on relating to and understanding the viewpoints of more traditional or detail-oriented types.`,
+        
+        cofounderAwareness: `When seeking a co-founder, ENTPs should be aware of their tendency to generate ideas without necessarily following through on them. Look for a partner who excels at implementation and can turn concepts into reality. ENTPs would benefit from a co-founder who brings structure and organization to complement their more spontaneous approach. Be mindful of potential conflicts arising from the ENTP's love of debate and tendency to play devil's advocate – a co-founder who appreciates intellectual discourse but can also keep discussions productive and on-track would be ideal. ENTPs should seek partners who can provide grounding and help with follow-through, balancing the ENTP's visionary tendencies with practical execution.`,
+        
+        startupAwareness: `In a startup context, ENTPs should leverage their innovative thinking and ability to spot trends to develop unique business models or disruptive technologies. However, they need to be aware of their tendency to chase new ideas at the expense of developing existing ones – in the startup world, focus and persistence are often key to success. ENTPs should actively work on developing their project management skills and ability to see things through to completion. They may need to consciously create systems for tracking progress and meeting deadlines, aspects that don't come naturally but are vital for startup success. ENTPs should also be aware of their potential to overlook important details in favor of big-picture thinking – partnering with or hiring detail-oriented individuals can help mitigate this. Lastly, ENTPs should use their adaptability and quick thinking to navigate the challenges of the startup world, while working on consistently translating their innovative ideas into viable products or services. Their natural networking abilities can be a great asset in building partnerships and attracting investors, but they need to back up their charisma with solid planning and execution.`
+    }
+             "INFJ": {
+        strengths: `INFJs are insightful visionaries with a strong sense of idealism and morality. They excel at understanding complex patterns in human behavior and are often able to intuitively grasp the core of an issue. Their empathy and perceptiveness make them skilled at understanding and motivating others. INFJs are creative problem-solvers, able to envision unique solutions that align with their values. Their commitment to their beliefs and ability to inspire others can make them compelling leaders, especially in causes they're passionate about.`,
+        
+        weaknesses: `INFJs may struggle with perfectionism, often setting unrealistically high standards for themselves and others. Their idealism can lead to disappointment when reality falls short of their expectations. They may have difficulty with criticism and conflict, sometimes avoiding necessary confrontations. INFJs can be overly private, which may hinder open communication in a team setting. Their tendency to overthink and their difficulty in letting go of negative experiences can sometimes lead to burnout or decision paralysis.`,
+        
+        workplaceHabits: `In the workplace, INFJs thrive in environments that align with their values and allow them to make a positive impact. They excel in roles that require empathy, such as counseling, HR, or mission-driven organizations. INFJs are often drawn to creative fields where they can express their insights and visions. They work best when they have the autonomy to pursue their ideas and the opportunity to work deeply on complex problems. INFJs may need quiet time to recharge and process information, and can become stressed in highly competitive or conflict-ridden environments. They are skilled at fostering harmony in a team and can often mediate conflicts effectively.`,
+        
+        percentage: `INFJs are the rarest personality type, making up only about 1-2% of the population. This rarity can be both a blessing and a challenge in the business world, as their unique perspectives can lead to innovative solutions, but may also result in feeling misunderstood or out of place in more conventional business settings.`,
+        
+        cofounderAwareness: `When seeking a co-founder, INFJs should be aware of their tendency to avoid conflict and their potential struggle with making tough decisions that might negatively impact others. Look for a partner who can complement this with a more pragmatic approach to business decisions. INFJs would benefit from a co-founder who excels at practical implementation and can help turn their visionary ideas into reality. Be mindful of the potential for burnout due to the INFJ's perfectionism and deep commitment – a co-founder who can provide balance and encourage self-care would be valuable. INFJs should seek partners who appreciate their intuitive insights and values-driven approach, but who can also challenge them to consider different perspectives and make decisions based on logic as well as feelings.`,
+        
+        startupAwareness: `In a startup context, INFJs should leverage their visionary thinking and ability to understand and motivate others to create mission-driven, people-focused businesses. However, they need to be aware of their tendency to take criticism personally – in the startup world, thick skin is often necessary. INFJs should actively work on developing their ability to make tough decisions and have difficult conversations, as these are crucial for leadership roles. They may need to consciously create boundaries to prevent burnout, as their deep commitment to their vision can lead to overwork. INFJs should also be aware of their potential to overlook practical details in favor of big-picture thinking – partnering with or hiring detail-oriented individuals can help mitigate this. Lastly, INFJs should use their natural ability to build deep, meaningful connections to create strong relationships with team members, clients, and partners, while also learning to network more broadly to expand their business opportunities.`
+    },
+            "INFP": {
+        strengths: `INFPs are creative idealists with a deep sense of empathy and a strong moral compass. They excel at understanding and appreciating the unique qualities of individuals, making them great at building authentic connections. Their creativity and imagination allow them to devise innovative solutions and see possibilities where others might not. INFPs are adaptable and open-minded, able to consider multiple perspectives. Their strong sense of values can make them passionate advocates for causes they believe in.`,
+        
+        weaknesses: `INFPs may struggle with practical details and implementation, often preferring to focus on ideas and possibilities rather than concrete action. They can be overly idealistic, leading to disappointment when reality doesn't match their visions. INFPs might have difficulty with criticism and conflict, sometimes taking feedback too personally. Their desire for harmony can lead them to avoid necessary confrontations or difficult decisions. They may also struggle with time management and meeting deadlines, as they often underestimate the time required for tasks.`,
+        
+        workplaceHabits: `In the workplace, INFPs thrive in environments that align with their values and allow for creativity and personal expression. They excel in roles that involve helping others, such as counseling, teaching, or non-profit work. INFPs work best when they have autonomy and flexibility, and may struggle with rigid structures or environments they perceive as inauthentic. They are often skilled writers and can excel in creative fields. INFPs may need quiet time to process information and recharge, and can become stressed in high-pressure or highly competitive environments. They are good at fostering a positive team atmosphere and are often appreciated for their empathy and supportiveness.`,
+        
+        percentage: `INFPs make up about 4-5% of the population. While not the rarest type, their unique combination of creativity, idealism, and empathy can bring valuable perspectives to the business world, particularly in areas focused on social impact or innovation.`,
+        
+        cofounderAwareness: `When looking for a co-founder, INFPs should be aware of their tendency to prioritize harmony over necessary conflict or difficult decisions. Seek a partner who can complement this with a more assertive approach when needed. INFPs would benefit from a co-founder who excels at practical implementation and can help turn their creative ideas into actionable plans. Be mindful of the potential for burnout due to the INFP's deep commitment to their ideals – a co-founder who can provide structure and encourage a healthy work-life balance would be valuable. INFPs should look for partners who appreciate their creativity and values-driven approach, but who can also bring a pragmatic perspective to balance the INFP's idealism.`,
+        
+        startupAwareness: `In a startup context, INFPs should leverage their creativity and empathy to create innovative, people-centered products or services. However, they need to be aware of their tendency to get lost in possibilities without taking concrete action – in the startup world, the ability to execute is crucial. INFPs should actively work on developing their decision-making skills and ability to handle conflict, as these are essential for leadership roles. They may need to consciously create systems for time management and meeting deadlines, aspects that don't come naturally but are vital for startup success. INFPs should also be aware of their potential to prioritize their vision over market realities – partnering with or hiring individuals with strong business acumen can help balance this. Lastly, INFPs should use their natural ability to understand and connect with others to build strong relationships with team members and clients, while also working on developing the resilience needed to navigate the ups and downs of startup life.`
+    },
+            "ENFJ": {
+        strengths: `ENFJs are charismatic leaders with a gift for inspiring and motivating others. They excel at understanding people's needs and potential, making them skilled at team building and development. Their strong communication skills and empathy allow them to build rapport quickly and foster cooperation. ENFJs are visionary and idealistic, often able to rally people around a common goal or cause. Their natural diplomacy and desire for harmony make them adept at resolving conflicts and creating positive work environments.`,
+        
+        weaknesses: `ENFJs may struggle with being overly sensitive to criticism and conflict, sometimes prioritizing harmony over necessary confrontations. Their desire to please others can lead to difficulty in making tough decisions that might disappoint people. ENFJs might also have a tendency to take on too much responsibility for others' problems or emotions, potentially leading to burnout. Their idealism can sometimes result in unrealistic expectations of themselves and others. They may struggle with details and logistics, preferring to focus on the big picture and people issues.`,
+        
+        workplaceHabits: `In the workplace, ENFJs thrive in roles that allow them to work with and develop people. They excel in leadership positions, particularly in fields like HR, teaching, coaching, or community organizing. ENFJs work best in collaborative environments where they can use their interpersonal skills to build team cohesion and motivation. They are often skilled at public speaking and can be effective in roles that require persuasion or inspiration. ENFJs may need to consciously make time for solitary work and reflection, as their focus on others can sometimes come at the expense of their own needs. They are typically good at creating a positive work culture and fostering employee engagement.`,
+        
+        percentage: `ENFJs make up about 2-3% of the population. Their natural leadership abilities and people skills make them well-suited for many business roles, particularly those involving team management, customer relations, or organizational development.`,
+        
+        cofounderAwareness: `When seeking a co-founder, ENFJs should be aware of their tendency to take on too much responsibility and potentially burnout. Look for a partner who can share the load and isn't afraid to set boundaries. ENFJs would benefit from a co-founder who excels at analytical thinking and can balance their people-focused approach with data-driven decision making. Be mindful of the potential for conflict avoidance – a co-founder who can model constructive confrontation would be valuable. ENFJs should seek partners who appreciate their visionary and people-centric approach, but who can also challenge them to make tough decisions when necessary.`,
+        
+        startupAwareness: `In a startup context, ENFJs should leverage their leadership skills and ability to inspire others to build strong, cohesive teams and create a positive company culture. However, they need to be aware of their tendency to prioritize people's feelings over hard business realities – in the startup world, difficult decisions are often necessary for survival and growth. ENFJs should actively work on developing their analytical skills and ability to make decisions based on data as well as intuition. They may need to consciously create boundaries to prevent burnout, as their deep commitment to their team and vision can lead to overwork. ENFJs should also be aware of their potential to overlook important details in favor of big-picture thinking – partnering with or hiring detail-oriented individuals can help mitigate this. Lastly, ENFJs should use their natural networking abilities and charisma to build strong relationships with investors, partners, and clients, while also working on developing the resilience needed to navigate the inevitable setbacks and criticism that come with startup life.`
+    },
+            "ENFP": {
+        strengths: `ENFPs are enthusiastic innovators with a talent for generating creative ideas and seeing possibilities. They excel at understanding and connecting with people, making them natural networkers and team motivators. Their adaptability and quick thinking allow them to thrive in dynamic environments. ENFPs are skilled communicators, often able to articulate their visions in a way that inspires others. Their curiosity and openness to new experiences make them adept at spotting trends and opportunities.`,
+        
+        weaknesses: `ENFPs may struggle with follow-through, often more excited by the generation of ideas than their implementation. They can be easily distracted, jumping from one project to another without completing them. ENFPs might have difficulty with routine tasks and detailed work, preferring to focus on the big picture. Their enthusiasm can sometimes lead them to overcommit or overpromise. They may also struggle with criticism and conflict, taking negative feedback personally.`,
+        
+        workplaceHabits: `In the workplace, ENFPs thrive in environments that offer variety, creativity, and human interaction. They excel in roles that allow them to use their communication skills and creativity, such as marketing, public relations, or entrepreneurship. ENFPs work best when they have the freedom to explore new ideas and approaches. They are often skilled at brainstorming and can be valuable in innovation-focused roles. ENFPs may need help with organization and follow-through, and can become demotivated in highly structured or routine-driven environments. They are typically good at creating a positive, energetic work atmosphere and fostering team spirit.`,
+        
+        percentage: `ENFPs make up about 6-8% of the population, making them one of the more common types. Their creativity, enthusiasm, and people skills can be valuable assets in many business contexts, particularly in roles requiring innovation, communication, or customer interaction.`,
+        
+        cofounderAwareness: `When looking for a co-founder, ENFPs should be aware of their tendency to generate ideas without necessarily following through on them. Seek a partner who excels at implementation and can turn concepts into reality. ENFPs would benefit from a co-founder who brings structure and organization to complement their more spontaneous approach. Be mindful of the potential for overcommitment – a co-founder who can help set realistic goals and timelines would be valuable. ENFPs should look for partners who appreciate their creativity and enthusiasm, but who can also provide grounding and focus when needed.`,
+        
+        startupAwareness: `In a startup context, ENFPs should leverage their creativity and networking skills to generate innovative ideas and build strong relationships with stakeholders. However, they need to be aware of their tendency to chase new ideas at the expense of developing existing ones – in the startup world, focus and persistence are often key to success. ENFPs should actively work on developing their project management skills and ability to see things through to completion. They may need to consciously create systems for tracking progress and meeting deadlines, aspects that don't come naturally but are vital for startup success. ENFPs should also be aware of their potential to overpromise in their enthusiasm – partnering with or hiring more pragmatic individuals can help provide a reality check. Lastly, ENFPs should use their adaptability and quick thinking to navigate the challenges of the startup world, while working on consistently translating their innovative ideas into viable products or services. Their natural charm and networking abilities can be great assets in building partnerships and attracting investors, but they need to back up their charisma with solid planning and execution.`
+    }   
+
+            "ISTJ": {
+        strengths: `ISTJs are methodical, reliable, and detail-oriented individuals. They excel at creating and maintaining systems and processes. Their strong sense of duty and responsibility makes them dependable team members and leaders. ISTJs are practical problem-solvers, able to apply past experiences to current challenges effectively. Their patience and thoroughness ensure high-quality work and consistent results.`,
+        
+        weaknesses: `ISTJs may struggle with adapting to rapid change, often preferring established methods over innovation. They can be perceived as inflexible or resistant to new ideas. Their focus on details might cause them to miss the bigger picture. ISTJs might have difficulty with abstract concepts or theoretical discussions. They may also struggle with expressing emotions or understanding others' emotional needs in a work context.`,
+        
+        workplaceHabits: `In the workplace, ISTJs thrive in structured environments with clear expectations. They excel in roles requiring attention to detail, such as accounting, quality control, or project management. ISTJs work best when they can follow established procedures and have the time to ensure accuracy. They are often skilled at creating and implementing efficient systems. ISTJs may need to consciously work on being more open to change and new ideas. They typically prefer quiet, focused work environments and may find highly social or chaotic workplaces stressful.`,
+        
+        percentage: `ISTJs make up about 11-14% of the population, making them one of the more common types. Their reliability and attention to detail make them valuable in many business contexts, particularly in roles requiring consistency and adherence to standards.`,
+        
+        cofounderAwareness: `When seeking a co-founder, ISTJs should be aware of their tendency to resist change and new ideas. Look for a partner who can bring innovation and adaptability to complement their stability and reliability. ISTJs would benefit from a co-founder who excels at big-picture thinking and can help them see beyond immediate practicalities. Be mindful of the potential for rigidity – a co-founder who can encourage flexibility and openness to new approaches would be valuable. ISTJs should seek partners who appreciate their methodical approach and attention to detail, but who can also challenge them to step out of their comfort zone when necessary.`,
+        
+        startupAwareness: `In a startup context, ISTJs should leverage their organizational skills and attention to detail to create stable, efficient business operations. However, they need to be aware of their tendency to stick with the familiar – in the startup world, adaptability and innovation are crucial. ISTJs should actively work on developing their ability to handle uncertainty and rapid change, as these are common in startups. They may need to consciously push themselves to consider new ideas and approaches, even when they seem risky or unproven. ISTJs should also be aware of their potential to focus too much on immediate practicalities at the expense of long-term vision – partnering with or hiring more visionary individuals can help balance this. Lastly, ISTJs should use their natural reliability and consistency to build trust with team members, clients, and investors, while also working on developing more comfort with the unpredictability inherent in startup life.`
+    },
+            "ISFJ": {
+        strengths: `ISFJs are dependable, caring, and detail-oriented individuals. They excel at creating harmonious work environments and attending to the needs of others. Their strong sense of duty and loyalty makes them reliable team members. ISFJs are practical and thorough, often skilled at managing day-to-day operations efficiently. Their ability to remember and use past experiences helps them solve current problems effectively.`,
+        
+        weaknesses: `ISFJs may struggle with assertiveness and can have difficulty saying no to requests, potentially leading to overwork. They can be resistant to change, preferring established methods and routines. ISFJs might have trouble seeing the long-term implications of decisions, focusing more on immediate, practical concerns. They may also take criticism personally and struggle with conflict in the workplace.`,
+        
+        workplaceHabits: `In the workplace, ISFJs thrive in supportive, structured environments. They excel in roles that allow them to help others and maintain order, such as administrative positions, human resources, or healthcare. ISFJs work best when they have clear expectations and can follow established procedures. They are often skilled at creating and maintaining efficient systems. ISFJs may need to consciously work on being more open to change and asserting their own needs. They typically prefer quiet, stable work environments and may find highly competitive or chaotic workplaces stressful.`,
+        
+        percentage: `ISFJs make up about 9-14% of the population, making them one of the more common types. Their reliability and attention to detail, combined with their caring nature, make them valuable in many business contexts, particularly in roles requiring both efficiency and interpersonal skills.`,
+        
+        cofounderAwareness: `When looking for a co-founder, ISFJs should be aware of their tendency to avoid conflict and their potential struggle with asserting their ideas. Seek a partner who can complement this with a more assertive approach when needed. ISFJs would benefit from a co-founder who excels at big-picture thinking and can help them see beyond immediate practical concerns. Be mindful of the potential for overwork due to the ISFJ's difficulty in saying no – a co-founder who can help set boundaries and encourage self-care would be valuable. ISFJs should look for partners who appreciate their attention to detail and supportive nature, but who can also challenge them to step out of their comfort zone and embrace necessary changes.`,
+        
+        startupAwareness: `In a startup context, ISFJs should leverage their organizational skills and ability to create harmonious work environments to build strong, efficient teams. However, they need to be aware of their tendency to stick with the familiar – in the startup world, adaptability and comfort with uncertainty are crucial. ISFJs should actively work on developing their assertiveness and ability to make decisions that might upset others, as these skills are often necessary in leadership roles. They may need to consciously push themselves to consider long-term strategy rather than just immediate practical concerns. ISFJs should also be aware of their potential to take on too much in their desire to help others – learning to delegate and set boundaries is crucial in a startup environment. Lastly, ISFJs should use their natural ability to remember details and past experiences to inform decision-making, while also working on becoming more comfortable with taking calculated risks.`
+    },
+            "ESTJ": {
+        strengths: `ESTJs are efficient, organized, and decisive leaders. They excel at implementing systems and processes to achieve goals. Their strong sense of duty and clear communication style makes them effective managers. ESTJs are practical problem-solvers, able to quickly identify issues and implement solutions. Their confidence and ability to make tough decisions are valuable in business settings.`,
+        
+        weaknesses: `ESTJs may struggle with flexibility and can be perceived as overly rigid or traditional. They might have difficulty with abstract or theoretical concepts, preferring concrete facts and immediate results. ESTJs can sometimes be seen as insensitive to others' feelings or dismissive of ideas that don't align with their own. Their focus on efficiency might lead them to overlook the human element in decision-making.`,
+        
+        workplaceHabits: `In the workplace, ESTJs thrive in structured environments where they can take charge and implement their ideas. They excel in leadership roles, particularly in fields that value tradition and clear hierarchies. ESTJs work best when they have clear goals and the authority to make decisions. They are often skilled at creating and maintaining efficient systems and processes. ESTJs may need to consciously work on being more open to alternative viewpoints and considering the emotional impact of their decisions. They typically prefer results-oriented work environments and may find highly collaborative or unstructured workplaces challenging.`,
+        
+        percentage: `ESTJs make up about 8-12% of the population. Their leadership skills and efficiency make them valuable in many business contexts, particularly in management roles or positions requiring decisive action and clear direction.`,
+        
+        cofounderAwareness: `When seeking a co-founder, ESTJs should be aware of their tendency to be overly directive and potentially dismissive of others' ideas. Look for a partner who can balance their decisive nature with a more collaborative approach. ESTJs would benefit from a co-founder who excels at considering long-term implications and can help them see beyond immediate practical concerns. Be mindful of the potential for rigidity – a co-founder who can encourage flexibility and openness to new approaches would be valuable. ESTJs should seek partners who appreciate their efficiency and decisiveness, but who can also challenge them to consider the human element in their decision-making.`,
+        
+        startupAwareness: `In a startup context, ESTJs should leverage their organizational and leadership skills to create clear structures and processes. However, they need to be aware of their tendency to rely too heavily on traditional methods – in the startup world, innovation and adaptability are crucial. ESTJs should actively work on developing their ability to handle ambiguity and consider unconventional ideas, as these are common in startups. They may need to consciously work on their emotional intelligence and ability to motivate diverse teams. ESTJs should also be aware of their potential to make decisions too quickly without considering all perspectives – taking time for reflection and seeking input from others can lead to better outcomes. Lastly, ESTJs should use their natural ability to get things done efficiently to drive the startup forward, while also working on developing more patience with the often chaotic and rapidly changing nature of startup environments.`
+    },
+            "ESFJ": {
+        strengths: `ESFJs are warm, organized, and people-oriented individuals. They excel at creating harmonious work environments and building strong team dynamics. Their strong sense of duty and ability to understand others' needs makes them effective in customer-facing roles. ESFJs are practical and efficient, often skilled at managing day-to-day operations smoothly. Their desire to help others and ability to remember personal details helps in building and maintaining relationships.`,
+        
+        weaknesses: `ESFJs may struggle with handling criticism and conflict, often taking disagreements personally. They can be overly concerned with others' opinions, which might lead to difficulty in making unpopular but necessary decisions. ESFJs might have trouble adapting to rapid change, preferring established routines. Their focus on immediate, practical matters might cause them to overlook long-term implications or innovative solutions.`,
+        
+        workplaceHabits: `In the workplace, ESFJs thrive in cooperative, structured environments. They excel in roles that allow them to work with and help others, such as human resources, customer service, or team management. ESFJs work best when they have clear expectations and can follow established procedures. They are often skilled at creating and maintaining a positive work culture. ESFJs may need to consciously work on being more open to change and asserting their own needs. They typically prefer harmonious work environments and may find highly competitive or chaotic workplaces stressful.`,
+        
+        percentage: `ESFJs make up about 9-12% of the population. Their interpersonal skills and efficiency make them valuable in many business contexts, particularly in roles requiring both organization and strong people skills.`,
+        
+        cofounderAwareness: `When looking for a co-founder, ESFJs should be aware of their tendency to avoid conflict and their potential struggle with making decisions that might upset others. Seek a partner who can complement this with a more assertive approach when needed. ESFJs would benefit from a co-founder who excels at long-term strategic thinking and can help them see beyond immediate practical and interpersonal concerns. Be mindful of the potential for becoming too focused on maintaining harmony at the expense of necessary changes – a co-founder who can encourage embracing productive conflict would be valuable. ESFJs should look for partners who appreciate their people skills and organizational abilities, but who can also challenge them to step out of their comfort zone and make tough decisions when necessary.`,
+        
+        startupAwareness: `In a startup context, ESFJs should leverage their interpersonal skills and ability to create positive work environments to build strong, cohesive teams. However, they need to be aware of their tendency to stick with the familiar – in the startup world, adaptability and comfort with uncertainty are crucial. ESFJs should actively work on developing their ability to make difficult decisions that might not please everyone, as this is often necessary in leadership roles. They may need to consciously push themselves to consider long-term strategy rather than just immediate practical and interpersonal concerns. ESFJs should also be aware of their potential to become overly involved in team members' personal lives – maintaining professional boundaries is important in a leadership role. Lastly, ESFJs should use their natural ability to understand and meet others' needs to create excellent customer service and team morale, while also working on becoming more comfortable with the constant change and potential conflicts inherent in startup life.`
+    }
+
+            "ISTP": {
+        strengths: `ISTPs are skilled troubleshooters with a talent for logical problem-solving. They excel at understanding how things work and finding practical solutions. Their ability to stay calm under pressure makes them valuable in crisis situations. ISTPs are adaptable and resourceful, often able to make the most of limited resources. Their detached, analytical approach allows them to make objective decisions.`,
+        
+        weaknesses: `ISTPs may struggle with long-term planning and can be perceived as overly focused on immediate results. They might have difficulty with abstract concepts or theoretical discussions. ISTPs can sometimes appear insensitive to others' emotions or dismissive of established procedures. Their need for independence can sometimes lead to difficulties in team settings.`,
+        
+        workplaceHabits: `In the workplace, ISTPs thrive in hands-on, results-oriented environments. They excel in roles that require troubleshooting, such as engineering, mechanics, or crisis management. ISTPs work best when they have the freedom to approach problems in their own way. They are often skilled at optimizing systems and processes for efficiency. ISTPs may need to consciously work on communicating their ideas more clearly to others and considering long-term implications of their actions. They typically prefer dynamic work environments and may find highly structured or routine-driven workplaces stifling.`,
+        
+        percentage: `ISTPs make up about 5-6% of the population. Their problem-solving skills and ability to stay calm under pressure make them valuable in many technical and crisis-response roles.`,
+        
+        cofounderAwareness: `When seeking a co-founder, ISTPs should be aware of their tendency to focus on immediate problems at the expense of long-term planning. Look for a partner who can complement their practical skills with strategic thinking. ISTPs would benefit from a co-founder who excels at communication and can help articulate their ideas to others. Be mindful of the potential for appearing detached – a co-founder who can help bridge the gap between their analytical approach and the human element of business would be valuable. ISTPs should seek partners who appreciate their problem-solving abilities and adaptability, but who can also provide structure and help with follow-through on projects.`,
+        
+        startupAwareness: `In a startup context, ISTPs should leverage their troubleshooting skills and adaptability to navigate the often chaotic early stages of a business. However, they need to be aware of their tendency to focus on immediate problems at the expense of long-term strategy – in the startup world, balancing both is crucial. ISTPs should actively work on developing their communication skills and ability to articulate their vision to team members and stakeholders. They may need to consciously push themselves to engage in networking and relationship-building activities, which are often critical for startup success. ISTPs should also be aware of their potential to become too involved in the technical aspects of the business at the expense of leadership responsibilities – delegating tasks and focusing on overall direction is important as the company grows. Lastly, ISTPs should use their natural ability to optimize systems to create efficient business processes, while also working on developing more comfort with the planning and structure necessary for scaling a business.`
+    },
+            "ISFP": {
+        strengths: `ISFPs are creative and adaptable individuals with a strong sense of aesthetics. They excel at bringing beauty and harmony to their environment. Their empathy and ability to live in the moment make them responsive to others' needs. ISFPs are often skilled at hands-on problem-solving and can be resourceful with limited means. Their flexibility allows them to adapt quickly to changing situations.`,
+        
+        weaknesses: `ISFPs may struggle with long-term planning and can be perceived as overly focused on immediate experiences. They might have difficulty with abstract theories or complex analyses. ISFPs can sometimes appear indecisive or uncommitted due to their desire to keep options open. Their aversion to conflict can lead to important issues being left unaddressed.`,
+        
+        workplaceHabits: `In the workplace, ISFPs thrive in environments that allow for creativity and personal expression. They excel in roles that involve aesthetics or hands-on work, such as design, craftsmanship, or the arts. ISFPs work best when they have the freedom to approach tasks in their own way and at their own pace. They are often skilled at creating harmonious work environments. ISFPs may need to consciously work on meeting deadlines and following through on long-term projects. They typically prefer flexible work environments and may find highly structured or routine-driven workplaces stifling.`,
+        
+        percentage: `ISFPs make up about 8-9% of the population. Their creativity and adaptability make them valuable in roles that require aesthetic sense and the ability to respond to changing conditions.`,
+        
+        cofounderAwareness: `When looking for a co-founder, ISFPs should be aware of their tendency to focus on present experiences at the expense of future planning. Seek a partner who can complement their creativity with strategic thinking and organizational skills. ISFPs would benefit from a co-founder who excels at turning ideas into concrete plans and can help with follow-through. Be mindful of the potential for conflict avoidance – a co-founder who can model constructive confrontation would be valuable. ISFPs should look for partners who appreciate their creativity and adaptability, but who can also provide structure and help with decision-making.`,
+        
+        startupAwareness: `In a startup context, ISFPs should leverage their creativity and adaptability to create unique products or services and respond quickly to market changes. However, they need to be aware of their tendency to focus on the present at the expense of long-term planning – in the startup world, balancing both is crucial. ISFPs should actively work on developing their ability to make firm decisions and stick to plans, as these are often necessary for business growth. They may need to consciously push themselves to engage in networking and self-promotion activities, which are often critical for startup success. ISFPs should also be aware of their potential to prioritize harmony over necessary conflicts or tough decisions – learning to address issues directly is important in a leadership role. Lastly, ISFPs should use their natural ability to understand and respond to others' needs to create excellent customer experiences and team dynamics, while also working on developing more comfort with the structure and planning necessary for scaling a business.`
+    },
+            "ESTP": {
+        strengths: `ESTPs are energetic problem-solvers with a talent for thinking on their feet. They excel at negotiation and can be persuasive communicators. Their ability to read people and situations makes them effective in sales and leadership roles. ESTPs are action-oriented and resourceful, often able to find creative solutions to immediate problems. Their risk-tolerance and adaptability can be assets in entrepreneurial settings.`,
+        
+        weaknesses: `ESTPs may struggle with long-term planning and can be perceived as impulsive or short-sighted. They might have difficulty with abstract theories or complex analyses that don't have immediate practical applications. ESTPs can sometimes appear insensitive to others' feelings or dismissive of established procedures. Their love of excitement can lead to unnecessary risk-taking or difficulty focusing on routine tasks.`,
+        
+        workplaceHabits: `In the workplace, ESTPs thrive in dynamic, results-oriented environments. They excel in roles that involve action and negotiation, such as sales, entrepreneurship, or emergency response. ESTPs work best when they have the freedom to solve problems in their own way and see immediate results. They are often skilled at motivating others and creating excitement around projects. ESTPs may need to consciously work on following through with long-term projects and considering the wider implications of their actions. They typically prefer fast-paced work environments and may find highly structured or routine-driven workplaces stifling.`,
+        
+        percentage: `ESTPs make up about 4-5% of the population. Their ability to think quickly and act decisively makes them valuable in many business contexts, particularly in roles requiring negotiation, crisis management, or entrepreneurship.`,
+        
+        cofounderAwareness: `When seeking a co-founder, ESTPs should be aware of their tendency to focus on immediate action at the expense of long-term planning. Look for a partner who can complement their quick thinking with strategic foresight. ESTPs would benefit from a co-founder who excels at organization and can help turn their ideas into sustainable plans. Be mindful of the potential for impulsive decision-making – a co-founder who can encourage thoughtful consideration of risks would be valuable. ESTPs should seek partners who appreciate their energy and problem-solving abilities, but who can also provide stability and help with follow-through on projects.`,
+        
+        startupAwareness: `In a startup context, ESTPs should leverage their quick thinking and ability to seize opportunities to navigate the fast-paced business world. However, they need to be aware of their tendency to prioritize immediate gains over long-term sustainability – in the startup world, balancing both is crucial. ESTPs should actively work on developing their ability to plan for the future and consider the long-term implications of their decisions. They may need to consciously push themselves to engage in detailed planning and documentation, which are often critical for scaling a business. ESTPs should also be aware of their potential to take unnecessary risks – learning to conduct thorough risk assessments is important in a leadership role. Lastly, ESTPs should use their natural ability to energize and motivate others to build strong teams and customer relationships, while also working on developing more patience with the often slow and methodical aspects of growing a business.`
+    },
+            "ESFP": {
+        strengths: `ESFPs are enthusiastic and charismatic individuals with a talent for bringing people together. They excel at creating positive experiences and are often skilled at customer relations. Their adaptability and quick thinking allow them to respond effectively to changing situations. ESFPs are often natural performers, able to capture attention and inspire others. Their empathy and social skills make them effective team players and mediators.`,
+        
+        weaknesses: `ESFPs may struggle with long-term planning and can be perceived as impulsive or short-sighted. They might have difficulty with abstract theories or complex analyses that don't have immediate practical applications. ESFPs can sometimes prioritize immediate pleasures over long-term responsibilities. Their desire to please others can lead to difficulty in making unpopular but necessary decisions.`,
+        
+        workplaceHabits: `In the workplace, ESFPs thrive in dynamic, people-oriented environments. They excel in roles that involve interpersonal interaction, such as sales, entertainment, or hospitality. ESFPs work best when they have variety in their tasks and can use their creativity. They are often skilled at creating a positive work atmosphere and boosting team morale. ESFPs may need to consciously work on meeting deadlines and following through with long-term projects. They typically prefer collaborative work environments and may find solitary or highly structured workplaces challenging.`,
+        
+        percentage: `ESFPs make up about 8-10% of the population. Their interpersonal skills and ability to create positive experiences make them valuable in many business contexts, particularly in roles requiring customer interaction or team motivation.`,
+        
+        cofounderAwareness: `When looking for a co-founder, ESFPs should be aware of their tendency to focus on immediate experiences at the expense of future planning. Seek a partner who can complement their people skills with strategic thinking and organizational abilities. ESFPs would benefit from a co-founder who excels at turning ideas into concrete plans and can help with follow-through. Be mindful of the potential for avoiding difficult decisions to please others – a co-founder who can encourage making tough choices when necessary would be valuable. ESFPs should look for partners who appreciate their enthusiasm and adaptability, but who can also provide structure and help with long-term goal setting.`,
+        
+        startupAwareness: `In a startup context, ESFPs should leverage their charisma and ability to connect with people to build strong customer relationships and create a positive company culture. However, they need to be aware of their tendency to focus on short-term gains or experiences at the expense of long-term planning – in the startup world, balancing both is crucial. ESFPs should actively work on developing their ability to set and stick to long-term goals, as this is often necessary for business growth. They may need to consciously push themselves to engage in detailed planning and financial management, which are critical for startup success. ESFPs should also be aware of their potential to prioritize pleasing others over making necessary but difficult decisions – learning to balance empathy with business needs is important in a leadership role. Lastly, ESFPs should use their natural ability to inspire and motivate others to build strong teams and customer loyalty, while also working on developing more comfort with the structure and routine often necessary for scaling a business.`
+    }
+        
+        // Add data for other types here
         };
 
-        function updateTypeInfo() {
-            const selectedType = document.getElementById('mbtiType').value;
-            const typeInfo = mbtiData[selectedType];
-            const titleElement = document.getElementById('typeTitle');
-            const infoElement = document.getElementById('typeInfo');
-            
-            if (typeInfo) {
-                titleElement.textContent = `${selectedType}: ${typeInfo.title}`;
-                infoElement.innerHTML = `
-                    <p><strong>Description:</strong> ${typeInfo.description}</p>
-                    <p><strong>Strengths:</strong> ${typeInfo.strengths}</p>
-                    <p><strong>Weaknesses:</strong> ${typeInfo.weaknesses}</p>
-                `;
+        document.getElementById('mbtiSelect').addEventListener('change', function() {
+            const selectedType = this.value;
+            const resultDiv = document.getElementById('result');
+
+            if (selectedType && mbtiData[selectedType]) {
+                const data = mbtiData[selectedType];
+                resultDiv.innerHTML = `
+                        <h2>Strengths</h2>
+                        <p>${data.strengths}</p>
+                        
+                        <h2>Weaknesses</h2>
+                        <p>${data.weaknesses}</p>
+                        
+                        <h2>Workplace Habits</h2>
+                        <p>${data.workplaceHabits}</p>
+                        
+                        <h2>Percentage of Population</h2>
+                        <p>${data.percentage}</p>
+                        
+                        <h2>Co-founder Awareness</h2>
+                        <p>${data.cofounderAwareness}</p>
+                        
+                        <h2>Startup Awareness</h2>
+                        <p>${data.startupAwareness}</p>
+                    `;
             } else {
-                titleElement.textContent = '';
-                infoElement.innerHTML = '';
+                resultDiv.innerHTML = '';
             }
-        }
+        });
     </script>
 </body>
 </html>
