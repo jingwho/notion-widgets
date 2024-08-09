@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI Type Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .widget {
+            padding: 20px;
+            color: #000000;
+            text-align: left;
+            width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        select, h2 {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 5px;
+        }
+        #typeInfo {
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="widget">
+        <select id="mbtiType" onchange="updateTypeInfo()">
+            <option value="">Select MBTI Type</option>
+            <option value="INTJ">INTJ</option>
+            <option value="INTP">INTP</option>
+            <option value="ENTJ">ENTJ</option>
+            <option value="ENTP">ENTP</option>
+            <option value="INFJ">INFJ</option>
+            <option value="INFP">INFP</option>
+            <option value="ENFJ">ENFJ</option>
+            <option value="ENFP">ENFP</option>
+            <option value="ISTJ">ISTJ</option>
+            <option value="ISFJ">ISFJ</option>
+            <option value="ESTJ">ESTJ</option>
+            <option value="ESFJ">ESFJ</option>
+            <option value="ISTP">ISTP</option>
+            <option value="ISFP">ISFP</option>
+            <option value="ESTP">ESTP</option>
+            <option value="ESFP">ESFP</option>
+        </select>
+        <h2 id="typeTitle"></h2>
+        <div id="typeInfo"></div>
+    </div>
+
+    <script>
+        const mbtiData = {
+            INTJ: {
+                title: "The Architect",
+                description: "Imaginative and strategic thinkers, with a plan for everything.",
+                strengths: "Rational, informed, independent, determined, curious, versatile",
+                weaknesses: "Arrogant, dismissive of emotions, overly critical, combative, clueless in romance"
+            },
+            INTP: {
+                title: "The Logician",
+                description: "Innovative inventors with an unquenchable thirst for knowledge.",
+                strengths: "Analytical, original, open-minded, curious, objective",
+                weaknesses: "Disconnected, insensitive, dissatisfied, impatient, perfectionistic"
+            },
+            ENTJ: {
+                title: "The Commander",
+                description: "Bold, imaginative and strong-willed leaders, always finding a way – or making one.",
+                strengths: "Efficient, energetic, self-confident, strong-willed, strategic thinkers",
+                weaknesses: "Stubborn, dominant, intolerant, impatient, arrogant"
+            },
+            ENTP: {
+                title: "The Debater",
+                description: "Smart and curious thinkers who cannot resist an intellectual challenge.",
+                strengths: "Knowledgeable, quick thinkers, original, charismatic, energetic",
+                weaknesses: "Argumentative, insensitive, intolerant, unfocused, disorganized"
+            },
+            INFJ: {
+                title: "The Advocate",
+                description: "Quiet and mystical, yet very inspiring and tireless idealists.",
+                strengths: "Creative, insightful, principled, passionate, altruistic",
+                weaknesses: "Sensitive to criticism, extremely private, perfectionist, always need to have a cause"
+            },
+            INFP: {
+                title: "The Mediator",
+                description: "Poetic, kind and altruistic people, always eager to help a good cause.",
+                strengths: "Empathetic, generous, open-minded, creative, passionate, idealistic",
+                weaknesses: "Unrealistic, self-isolating, unfocused, emotionally vulnerable, desperate to please"
+            },
+            ENFJ: {
+                title: "The Protagonist",
+                description: "Charismatic and inspiring leaders, able to mesmerize their listeners.",
+                strengths: "Charismatic, tolerant, reliable, natural leaders, warm",
+                weaknesses: "Overly idealistic, too selfless, too sensitive, fluctuating self-esteem"
+            },
+            ENFP: {
+                title: "The Campaigner",
+                description: "Enthusiastic, creative and sociable free spirits, who can always find a reason to smile.",
+                strengths: "Curious, observant, energetic and enthusiastic, excellent communicators",
+                weaknesses: "Poor practical skills, find it difficult to focus, overthink things, get stressed easily"
+            },
+            ISTJ: {
+                title: "The Logistician",
+                description: "Practical and fact-minded individuals, whose reliability cannot be doubted.",
+                strengths: "Honest and direct, strong-willed and dutiful, very responsible, calm and practical",
+                weaknesses: "Stubborn, insensitive, always by the book, judgmental, often unreasonably blame themselves"
+            },
+            ISFJ: {
+                title: "The Defender",
+                description: "Very dedicated and warm protectors, always ready to defend their loved ones.",
+                strengths: "Supportive, reliable and patient, imaginative and observant, enthusiastic, loyal and hard-working",
+                weaknesses: "Shy and unwilling to open up, take things too personally, repress their feelings, overload themselves"
+            },
+            ESTJ: {
+                title: "The Executive",
+                description: "Excellent administrators, unsurpassed at managing things – or people.",
+                strengths: "Dedicated, strong-willed, direct and honest, loyal, patient and reliable",
+                weaknesses: "Inflexible and stubborn, uncomfortable with unconventional situations, judgmental, too focused on social status"
+            },
+            ESFJ: {
+                title: "The Consul",
+                description: "Extraordinarily caring, social and popular people, always eager to help.",
+                strengths: "Strong practical skills, strong sense of duty, very loyal, sensitive and warm",
+                weaknesses: "Worried about their social status, inflexible, unwilling to improvise, vulnerable to criticism"
+            },
+            ISTP: {
+                title: "The Virtuoso",
+                description: "Bold and practical experimenters, masters of all kinds of tools.",
+                strengths: "Optimistic and energetic, creative and practical, spontaneous and rational, know how to prioritize",
+                weaknesses: "Stubborn, insensitive, private and reserved, easily bored, dislike commitment"
+            },
+            ISFP: {
+                title: "The Adventurer",
+                description: "Flexible and charming artists, always ready to explore and experience something new.",
+                strengths: "Charming, sensitive to others, imaginative, passionate, curious",
+                weaknesses: "Fiercely independent, unpredictable, easily stressed, overly competitive"
+            },
+            ESTP: {
+                title: "The Entrepreneur",
+                description: "Smart, energetic and very perceptive people, who truly enjoy living on the edge.",
+                strengths: "Bold, rational and practical, original, perceptive, direct",
+                weaknesses: "Insensitive, impatient, risk-prone, unstructured, may miss the bigger picture"
+            },
+            ESFP: {
+                title: "The Entertainer",
+                description: "Spontaneous, energetic and enthusiastic people – life is never boring around them.",
+                strengths: "Bold, original, aesthetic skills, showmanship, practical",
+                weaknesses: "Sensitive, conflict-averse, easily bored, poor long-term planners"
+            }
+        };
+
+        function updateTypeInfo() {
+            const selectedType = document.getElementById('mbtiType').value;
+            const typeInfo = mbtiData[selectedType];
+            const titleElement = document.getElementById('typeTitle');
+            const infoElement = document.getElementById('typeInfo');
+            
+            if (typeInfo) {
+                titleElement.textContent = `${selectedType}: ${typeInfo.title}`;
+                infoElement.innerHTML = `
+                    <p><strong>Description:</strong> ${typeInfo.description}</p>
+                    <p><strong>Strengths:</strong> ${typeInfo.strengths}</p>
+                    <p><strong>Weaknesses:</strong> ${typeInfo.weaknesses}</p>
+                `;
+            } else {
+                titleElement.textContent = '';
+                infoElement.innerHTML = '';
+            }
+        }
+    </script>
+</body>
+</html>
