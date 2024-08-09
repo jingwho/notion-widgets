@@ -306,34 +306,32 @@
         };
 
         document.getElementById('mbtiSelect').addEventListener('change', function() {
-            const selectedType = this.value;
-            const resultDiv = document.getElementById('result');
+    const selectedType = this.value;
+    const resultDiv = document.getElementById('result');
 
-            if (selectedType && mbtiData[selectedType]) {
-                const data = mbtiData[selectedType];
-                resultDiv.innerHTML = `
-                        <h2>Strengths</h2>
-                        <p>${data.strengths}</p>
-                        
-                        <h2>Weaknesses</h2>
-                        <p>${data.weaknesses}</p>
-                        
-                        <h2>Workplace Habits</h2>
-                        <p>${data.workplaceHabits}</p>
-                        
-                        <h2>Percentage of Population</h2>
-                        <p>${data.percentage}</p>
-                        
-                        <h2>Co-founder Awareness</h2>
-                        <p>${data.cofounderAwareness}</p>
-                        
-                        <h2>Startup Awareness</h2>
-                        <p>${data.startupAwareness}</p>
-                    `;
-            } else {
-                resultDiv.innerHTML = '';
-            }
-        });
+    if (selectedType && mbtiData[selectedType]) {
+        const data = mbtiData[selectedType];
+        resultDiv.innerHTML = `
+            <h2>Strengths and Weaknesses</h2>
+            <p>${data.strengths.charAt(0).toLowerCase() + data.strengths.slice(1)}</p>
+            <p>${data.weaknesses.charAt(0).toLowerCase() + data.weaknesses.slice(1)}</p>
+            
+            <h2>Workplace Habits</h2>
+            <p>${data.workplaceHabits.charAt(0).toLowerCase() + data.workplaceHabits.slice(1)}</p>
+            
+            <h2>Percentage of Population</h2>
+            <p>${data.percentage}</p>
+            
+            <h2>Co-Founder Awareness</h2>
+            <p>${data.cofounderAwareness.charAt(0).toLowerCase() + data.cofounderAwareness.slice(1)}</p>
+            
+            <h2>Startup Awareness</h2>
+            <p>${data.startupAwareness.charAt(0).toLowerCase() + data.startupAwareness.slice(1)}</p>
+        `;
+    } else {
+        resultDiv.innerHTML = '';
+    }
+});
     </script>
 </body>
 </html>
