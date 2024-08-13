@@ -1,89 +1,8 @@
-/* General Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Body Styling */
 body {
+    text-align: center;
     font-family: monospace;
     background-color: #fff;
-    color: #000000;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
 }
-
-/* Widget Container */
-.widget-container {
-    background-color: #ffffff;
-    border: 3px solid #000000;
-    border-radius: 5px;
-    box-shadow: 2px 2px 1px 0px #000000;
-    padding: 20px;
-    max-width: 300px;
-    width: 100%;
-}
-
-/* Text Styling */
-.widget-title {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-}
-
-.text-large {
-    font-size: 2rem;
-    font-weight: bold;
-}
-
-.text-medium {
-    font-size: 1rem;
-    font-weight: normal;
-}
-
-.text-small {
-    font-size: 15px;
-    font-weight: lighter;
-}
-
-/* Input Styling */
-input, select, button {
-    background-color: #ffffff;
-    border: 3px solid #000000;
-    border-radius: 5px;
-    box-shadow: 2px 2px 1px 0px #000000;
-    padding: 10px;
-    font-size: 1rem;
-    width: 100%;
-    margin-bottom: 10px;
-    font-family: monospace;
-}
-
-input:focus, select:focus {
-    outline: none;
-}
-
-/* Button Styling */
-.button {
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.button:hover {
-    background-color: #000000;
-    color: #ffffff;
-}
-
-/* Countdown Display */
-.countdown-display {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
 .box {
     display: inline-block;
     padding: 10px;
@@ -93,17 +12,30 @@ input:focus, select:focus {
     border: 3px solid #000000;
     border-radius: 5px;
     box-shadow: 2px 2px 1px 0px #000000;
+}
+
+h2 {
+    display: inline-block;
+    margin-right: 10px;
+    margin-block-start: 5px;
+}
+h3 {
+    text-align: left;
+    display: inline-block;
+}
+.small {
+    font-size: 15px;
+    font-weight: lighter;
+}
+#days {
     background-color: #f3fff3;
 }
 
-/* Responsive Design */
-@media (max-width: 300px) {
-    .countdown-display {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .box {
-        margin-bottom: 10px;
-    }
+/* Additional styles for input and button */
+input, button {
+    margin: 5px;
+    padding: 5px;
+    border: 3px solid #000000;
+    border-radius: 5px;
+    box-shadow: 2px 2px 1px 0px #000000;
 }
