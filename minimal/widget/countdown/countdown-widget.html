@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Widget</title>
+    <link rel="stylesheet" href="https://github.com/jingwho/notion-widgets/new/main/minimal/minimalist-widget-style.css">
+</head>
+<body>
+    <div class="widget-container">
+        <div class="widget-title">Countdown Timer</div>
+        <div id="setupForm" class="grid-item">
+            <input type="text" id="goalInput" placeholder="Enter your goal" class="text-medium">
+            <input type="date" id="dateInput" class="text-medium">
+            <button onclick="setCountdown()" class="button">Set Countdown</button>
+        </div>
+        <div id="countdownDisplay" class="grid-item" style="display:none;">
+            <div id="goalText" class="text-medium"></div>
+            <div id="countdown" class="text-large"></div>
+            <button onclick="resetCountdown()" class="button">Reset</button>
+        </div>
+    </div>
+
+    <script src="countdown-widget.js"></script>
+</body>
+</html>
