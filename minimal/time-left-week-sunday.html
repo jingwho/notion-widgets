@@ -3,91 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Time Left this week</title>
+    <title>Countdown Widget</title>
     <style>
-        
-        body{
-            text-align: center;
+        :root {
+            --widget-bg-color: #FFFFFF;
+            --widget-text-color: #000000;
+            --widget-border-color: #000000;
+        }
+        body {
             font-family: monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
             background-color: #fff;
         }
-        .box{
-            display: inline-block;
-            display: inline-block;
-            padding: 10px;
+        .widget {
+            background-color: var(--widget-bg-color);
+            color: var(--widget-text-color);
+            border: 3px solid var(--widget-border-color);
             border-radius: 5px;
-            min-width: 40px;
-            height: 40px;
-            border: 3px solid #000000;
-            border-radius: 5px;
-            box-shadow: 2px 2px 1px 0px #000000;
+            box-shadow: 2px 2px 1px 0px var(--widget-border-color);
+            padding: 5px;
+            text-align: center;
+            width: 300px;
+            margin: auto;
+            font-variant-caps: all-petite-caps;
         }
-      
-        h2{
-            display: inline-block;
-            margin-right: 10px;
-            margin-block-start: 5px;
+        .widget-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
-        h3{
+        #goalText {
+            font-size: 24px;
+            margin-bottom: 10px;
             text-align: left;
             display: inline-block;
-            
+            width: 100%;
         }
-        .small{
-            font-size: 15px;
-            font-weight: lighter;
+        #countdown {
+            font-size: 20px;
+            margin-top: 10px;
+            letter-spacing: 5px;
         }
-
-        #days{
-            background-color:  #f3fff3; ;
+        input, button {
+            margin: 5px 0;
+            padding: 5px;
+            width: 100%;
+            box-sizing: border-box;
+            font-variant-caps: all-petite-caps;
         }
-
-
     </style>
 </head>
 <body>
-    
-    <div id="counter">
-   
-    <div>
-        <h2 class="box" id="days"></h2>
-        <h2 class="box" id="hours"></h2>
-        <h2 class="box" id="minutes"></h2>
-        <h2 class="box" id="seconds"></h2>
-
-        <h3>
-            Left in <br>This Week
-        </h3>
+    <div class="widget">
+        <div class="widget-content">
+            <div id="setupForm">
+                <input type="text" id="goalInput" placeholder="Enter your goal">
+                <input type="date" id="dateInput">
+                <button onclick="setCountdown()">Set Countdown</button>
+            </div>
+            <div id="countdownDisplay" style="display:none;">
+                <h3 id="goalText"></h3>
+                <div id="countdown"></div>
+                <button onclick="resetCountdown()">Reset</button>
+            </div>
+        </div>
     </div>
-       
-    </div>
 
+    <script>
+        let countdownDate;
+        let countdownInterval;
 
+        function setCountdown() {
+            const goal = document.getElementById('goalInput').value;
+            const date = document.getElementById('dateInput').value;
+            
+            if (!goal || !date) {
+                alert('Please enter both a goal and a date.');
+                return;
+            }
 
-<script>
-    function CountDownTimer  () {
-    left_days = document.getElementById("days");
-    left_hours = document.getElementById("hours");
-    left_minutes = document.getElementById("minutes");
-    left_seconds = document.getElementById("seconds");
- 
-    }
-    function showRemaining (){
-    now = new Date();
- 
-    days = 6 - now.getDay(); ;
-    hours = 23 - now.getHours();
-    minutes = 59 - now.getMinutes();
-    seconds = 59 - now.getSeconds();
-    left_days.innerHTML = days + "<br> <span class=\"small\"> days </span>"
-    left_hours.innerHTML = hours + "<br> <span class=\"small\"> hours</span>";
-    left_minutes.innerHTML = minutes + "<br> <span class=\"small\">mins</span>";
-    left_seconds.innerHTML = seconds + "<br> <span class=\"small\">secs</span>";
-    }
+            countdownDate = new Date(date).getTime();
+            document.getElementById('goalText').innerText = goal.toUpperCase();
+            document.getElementById('setupForm').style.display = 'none';
+            document.getElementById('countdownDisplay').style.display = 'block';
+            
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
 
-timer = setInterval (showRemaining, 1000) 
-CountDownTimer() ;
-</script>
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById('countdown').innerHTML = "EXPIRED";
+                return;
+            }
+
+            const months = Math.floor(distance / (1000 * 60 * 60 * 24 * 30.44));
+            const weeks = Math.floor((distance % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24 * 7));
+            const days = Math.floor((distance % (1000 * 60 * 60 * 24 * 7)) / (1000 * 60 * 60 * 24));
+
+            document.getElementById('countdown').innerHTML = `${months}M ${weeks}W ${days}D`;
+        }
+
+        function resetCountdown() {
+            clearInterval(countdownInterval);
+            document.getElementById('setupForm').style.display = 'block';
+            document.getElementById('countdownDisplay').style.display = 'none';
+            document.getElementById('goalInput').value = '';
+            document.getElementById('dateInput').value = '';
+        }
+    </script>
 </body>
 </html>
