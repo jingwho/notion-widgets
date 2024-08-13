@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Countdown Widget</title>
     <style>
+        :root {
+            --widget-bg-color: #FFFFFF;
+            --widget-text-color: #000000;
+            --widget-border-color: #000000;
+        }
         body {
-            font-family: Arial, sans-serif;
+            font-family: sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -15,27 +20,29 @@
             background-color: #f0f0f0;
         }
         .widget {
-            padding: 20px;
-            color: #000000;
+            background-color: var(--widget-bg-color);
+            color: var(--widget-text-color);
+            border: 3px solid var(--widget-border-color);
+            border-radius: 5px;
+            box-shadow: 2px 2px 1px 0px var(--widget-border-color);
+            padding: 5px;
             text-align: center;
-            width: 300px;
+            max-width: 95%;
             margin: auto;
-            font-variant-caps: petite-caps;
-            font-size: 1.2em;
-            background:
-                linear-gradient(to right, black 4px, transparent 4px) 0 0,
-                linear-gradient(to right, black 4px, transparent 4px) 0 100%,
-                linear-gradient(to left, black 4px, transparent 4px) 100% 0,
-                linear-gradient(to left, black 4px, transparent 4px) 100% 100%,
-                linear-gradient(to bottom, black 4px, transparent 4px) 0 0,
-                linear-gradient(to bottom, black 4px, transparent 4px) 100% 0,
-                linear-gradient(to top, black 4px, transparent 4px) 0 100%,
-                linear-gradient(to top, black 4px, transparent 4px) 100% 100%;
-            background-repeat: no-repeat;
-            background-size: 20px 20px;
+            font-variant-caps: all-petite-caps;
+        }
+        .widget-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #goalText {
+            font-size: 24px;
+            margin-bottom: 10px;
         }
         #countdown {
-            font-size: 1.5em;
+            font-size: 20px;
             margin-top: 10px;
         }
         input, button {
@@ -43,24 +50,23 @@
             padding: 5px;
             width: 100%;
             box-sizing: border-box;
-        }
-        #goalText {
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-variant-caps: all-petite-caps;
         }
     </style>
 </head>
 <body>
-    <div class="widget" id="widget">
-        <div id="setupForm">
-            <input type="text" id="goalInput" placeholder="Enter your goal">
-            <input type="date" id="dateInput">
-            <button onclick="setCountdown()">Set Countdown</button>
-        </div>
-        <div id="countdownDisplay" style="display:none;">
-            <div id="goalText"></div>
-            <div id="countdown"></div>
-            <button onclick="resetCountdown()">Reset</button>
+    <div class="widget">
+        <div class="widget-content">
+            <div id="setupForm">
+                <input type="text" id="goalInput" placeholder="Enter your goal">
+                <input type="date" id="dateInput">
+                <button onclick="setCountdown()">Set Countdown</button>
+            </div>
+            <div id="countdownDisplay" style="display:none;">
+                <div id="goalText"></div>
+                <div id="countdown"></div>
+                <button onclick="resetCountdown()">Reset</button>
+            </div>
         </div>
     </div>
 
@@ -78,7 +84,7 @@
             }
 
             countdownDate = new Date(date).getTime();
-            document.getElementById('goalText').innerText = goal;
+            document.getElementById('goalText').innerText = goal.toUpperCase();
             document.getElementById('setupForm').style.display = 'none';
             document.getElementById('countdownDisplay').style.display = 'block';
             
@@ -101,7 +107,7 @@
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            document.getElementById('countdown').innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            document.getElementById('countdown').innerHTML = `${days}D ${hours}H ${minutes}M ${seconds}S`;
         }
 
         function resetCountdown() {
