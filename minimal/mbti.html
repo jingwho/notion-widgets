@@ -44,7 +44,7 @@
             font-size: 18px;
             margin-bottom: 20px;
             padding: 5px;
-            width: 200px;
+            width: 220px;
         }
 
         #result {
@@ -60,6 +60,7 @@
 
         #result p {
             margin-top: 0;
+            line-height: 1.5;
             text-transform: none;
         }
     </style>
@@ -313,9 +314,9 @@
     if (selectedType && mbtiData[selectedType]) {
         const data = mbtiData[selectedType];
         resultDiv.innerHTML = `
-            <h2>Strengths and Weaknesses</h2>
+          <!---  <h2>Strengths and Weaknesses</h2>
             <p>${data.strengths}</p>
-            <p>${data.weaknesses}</p>
+            <p>${data.weaknesses}</p> --->
             
             <h2>Workplace Habits</h2>
             <p>${data.workplaceHabits}</p>
