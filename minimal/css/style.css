@@ -1,101 +1,59 @@
-/* General Reset */
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
-/* Body Styling */
 body {
-    font-family: 'Arial', 'Helvetica', sans-serif;
-    background-color: #ffffff;
-    color: #000000;
+    font-family: sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
 }
 
-/* Widget Container */
 .widget-container {
-    background-color: #ffffff;
-    border: 2px solid #000000;
+    border: 2px solid black;
     padding: 20px;
+    width: 300px;
+}
+
+.widget-title {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+input, button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid black;
+}
+
+button {
+    background-color: white;
+    cursor: pointer;
+}
+
+.countdown-display {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    max-width: 300px;
-    width: 100%;
+    margin-top: 20px;
 }
 
-/* Text Styling */
-.text-large {
-    font-size: 2rem;
+.countdown-box {
+    border: 2px solid black;
+    padding: 10px;
+    text-align: center;
+}
+
+.countdown-value {
+    font-size: 1.5rem;
     font-weight: bold;
 }
 
-.text-medium {
-    font-size: 1rem;
-    font-weight: normal;
-}
-
-.text-small {
+.countdown-label {
     font-size: 0.8rem;
-    font-weight: normal;
-}
-
-/* Grid Item */
-.grid-item {
-    border: 2px solid #000000;
-    padding: 10px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Button Styling */
-.button {
-    background-color: #ffffff;
-    color: #000000;
-    border: 2px solid #000000;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.button:hover {
-    background-color: #000000;
-    color: #ffffff;
-}
-
-/* Input Styling */
-input, select {
-    background-color: #ffffff;
-    border: 2px solid #000000;
-    padding: 10px;
-    font-size: 1rem;
-    width: 100%;
-}
-
-input:focus, select:focus {
-    outline: none;
-}
-
-/* Widget Title */
-.widget-title {
-    grid-column: 1 / -1;
-    text-align: center;
-    font-size: 1.2rem;
-    margin-top: 10px;
-}
-
-/* Responsive Design */
-@media (max-width: 300px) {
-    .widget-container {
-        grid-template-columns: 1fr;
-    }
 }
