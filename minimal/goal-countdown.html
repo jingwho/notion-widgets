@@ -27,7 +27,7 @@
             box-shadow: 2px 2px 1px 0px var(--widget-border-color);
             padding: 5px;
             text-align: center;
-            max-width: 95%;
+            width: 300px;
             margin: auto;
             font-variant-caps: all-petite-caps;
         }
@@ -40,10 +40,14 @@
         #goalText {
             font-size: 24px;
             margin-bottom: 10px;
+            text-align: left;
+            display: inline-block;
+            width: 100%;
         }
         #countdown {
             font-size: 20px;
             margin-top: 10px;
+            letter-spacing: 5px;
         }
         input, button {
             margin: 5px 0;
@@ -63,7 +67,7 @@
                 <button onclick="setCountdown()">Set Countdown</button>
             </div>
             <div id="countdownDisplay" style="display:none;">
-                <div id="goalText"></div>
+                <h3 id="goalText"></h3>
                 <div id="countdown"></div>
                 <button onclick="resetCountdown()">Reset</button>
             </div>
@@ -102,12 +106,11 @@
                 return;
             }
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            const months = Math.floor(distance / (1000 * 60 * 60 * 24 * 30.44));
+            const weeks = Math.floor((distance % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24 * 7));
+            const days = Math.floor((distance % (1000 * 60 * 60 * 24 * 7)) / (1000 * 60 * 60 * 24));
 
-            document.getElementById('countdown').innerHTML = `${days}D ${hours}H ${minutes}M ${seconds}S`;
+            document.getElementById('countdown').innerHTML = `${months}M ${weeks}W ${days}D`;
         }
 
         function resetCountdown() {
